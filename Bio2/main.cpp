@@ -1,59 +1,53 @@
 #include <iostream>
 #include <fstream>
-#include <cstring>
+#include <string>
 
 using namespace std;
 
-void FreqPattern(char* DNK, int pattern)
+
+int Count(string &DNK, string &pattern) {
+	int count = 0;
+	for (int i = 0; i < DNK.length() - pattern.length() + 1; i++) {
+		if (DNK.substr(i, pattern.length()) == pattern) count++;
+	}
+	return count;
+}
+
+
+string FreqPattern(string DNK, int pattern)
 {
-	int max = -1;
-	int Rez = 1;
-	int k = 0;
-	int* count = new int [strlen(DNK) - pattern + 1];
-	char** buf = new char*[strlen(DNK) - pattern + 1];
-	for (int i = 0; i < (strlen(DNK) - pattern + 1); i++)
+	int max = 0;
+	string Rez;
+	int* count = new int [DNK.size() - pattern + 1];
+	for (int i = 0; i < (DNK.size() - pattern + 1); i++)
 	{
-		count[i] = 1;
-		buf[i] = new char[pattern];
-		if (i == 0)
+		count[i] = Count(DNK, DNK.substr(i,pattern));
+			//if ((DNK.substr(i, (DNK.substr(i, pattern)).length())) == DNK.substr(i, pattern))
+				//count[i]++;
+
+		if (count[i] > max)
 		{
-			strncpy(buf[0], DNK, pattern);
-		}
-		else
-		{
-			strncpy_s(buf[i], pattern+1, DNK + i, pattern);
-			for (int j = 0; j < i; j++)
-			{
-				if (!strcmp(buf[i],buf[j]))
-				{
-					Rez++;
-					if (Rez >= max)
-					{
-						max = Rez;
-						count[k]=j;
-						k++;
-					}
-				}
-			}
+			max = count[i];
 		}
 	}
-	ofstream fout("output.txt");
-	for (int j = 0; j < k; j++)
-	{
-		cout << Rez << " -- " << buf[count[j]] << endl;
-		fout << Rez << " -- " << buf[count[j]] << endl;	
-	}
-	fout.close();
-	delete[] count;
-	
+	for (int i = 0; i < (DNK.size() - pattern + 1); i++)
+		if (max == count[i])
+			Rez += DNK.substr(i, pattern);
+
+	for (int i = 0; i < Rez.length(); i += pattern)
+		for (int j = 0; j < Rez.length() - pattern; j += pattern)
+			if (Rez.substr(i, pattern) == Rez.substr(j, pattern))
+				Rez.erase(j, pattern);
+
+	return Rez;
 }
 
 int main()
 {
 
-	const int len = 50;
-	char DNK[len];
+	string DNK;
 	int pattern;
+	string k;
 
 	ifstream fin("input.txt");
 	fin >> pattern;
@@ -61,6 +55,11 @@ int main()
 	fin >> DNK;
 	cout << DNK << endl;
 	fin.close();
-	FreqPattern(DNK, pattern);
+
+	k = FreqPattern(DNK, pattern);
+	ofstream fout("output.txt");
+	fout << k;
+	fout.close();
+	//FreqPattern(DNK, pattern);
 	return 0;
 }
