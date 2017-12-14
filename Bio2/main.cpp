@@ -1,6 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <string>
 #include <list>
 #include <vector>
 #include <map>
@@ -22,14 +25,14 @@ vector<string> motifSearch(string *DNA, int num, int size, int n)
 
 	char**A = new char*[4];
 	for (int i = 0; i < 4; i++)
-			A[i] = new char[size];
+		A[i] = new char[size];
 
 	vector<string> Output(num);
 	int *ind = new int[num];
 	for (int i = 0; i < num; i++)
 		ind[i] = 0;
 
-	int Pos = pow(n - size + 1, num); 
+	int Pos = pow(n - size + 1, num);
 	for (int i = 0; i < Pos; i++)
 	{
 		for (int i = 0; i < 4; i++)
@@ -47,6 +50,7 @@ vector<string> motifSearch(string *DNA, int num, int size, int n)
 		{
 			for (int j = 0; j < num; j++)
 			{
+
 				A[CharIndex(ACGT, toupper(B[j][k]))][k]++;
 			}
 		}
@@ -99,13 +103,6 @@ vector<string> motifSearch(string *DNA, int num, int size, int n)
 	return Output;
 }
 
-int CharIndex(vector<char> alphabet, char c)
-{
-	for (int i = 0; i < alphabet.size(); i++)
-		if (alphabet[i] == c)
-			return i;
-	return -1;
-}
 
 int main()
 {
@@ -113,10 +110,10 @@ int main()
 	vector<string> motifs;
 	int num, size;
 	ifstream fin("input.txt");
-		fin >> size; 
-		cout << size;
-		fin >> num;
-		cout << num;
+	fin >> size;
+	cout << size;
+	fin >> num;
+	cout << num;
 	DNA = new string[num];
 	int i = 0;
 
@@ -126,12 +123,25 @@ int main()
 		fin >> DNA[i];
 		cout << DNA[i] << endl;
 	}
+	fin.close();
+
 	//Alghorithm
 	motifs = motifSearch(DNA, num, size, DNA[0].size());
+
 	//Output
+	ofstream fout("output.txt");
 	for (int i = 0; i < motifs.size(); i++)
-		cout << motifs[i] << endl;
+		fout << motifs[i] << endl;
+	fout.close();
 
 	delete[] DNA;
 	return 0;
+}
+
+int CharIndex(vector<char> alphabet, char c)
+{
+	for (int i = 0; i < alphabet.size(); i++)
+		if (alphabet[i] == c)
+			return i;
+	return -1;
 }
